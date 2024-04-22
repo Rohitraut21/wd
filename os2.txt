@@ -1,0 +1,173 @@
+fcfs : 
+
+ #include<bits/stdc++.h>
+ using namespace std;
+ class Process
+ {
+ public:
+ string name;
+ float at, bt, st, tat, wt, ft;
+ };
+ int main()
+ {
+ int n;
+ cout<<"Enter number of processes : ";
+ cin>>n;
+ Process P[n];
+ for(int i=0;i<n;i++)
+ {
+ cout<<"Enter process name : ";
+ cin>>P[i].name;
+ cout<<"Enter arrival time : ";
+ cin>>P[i].at;
+ cout<<"Enter burst time : ";
+ cin>>P[i].bt;
+ }
+ for(int i=0;i<n;i++)
+ {
+ for(int j=0;j<n-1;j++)
+ {
+ if(P[j+1].at < P[j].at)
+ swap(P[j],P[j+1]);
+ }
+ }
+ cout<<endl;
+ int temp = P[0].at;
+ float avg_tat=0, avg_wt=0;
+ for(int i=0;i<n;i++)
+ {
+ P[i].ft = temp + P[i].bt;
+ if(P[i+1].at < P[i].ft)
+ temp = P[i].ft;
+ else
+ temp = P[i+1].at;
+P[i].tat = P[i].ft- P[i].at;
+ P[i].wt = P[i].tat- P[i].bt;
+ avg_tat = avg_tat + P[i].tat;
+ avg_wt = avg_wt + P[i].wt;
+ }
+ cout<<"Average time around time is "<<avg_tat/n<<endl;
+ cout<<"Average waiting time is "<<avg_wt/n<<endl<<endl;
+ cout<<setw(5)<<"Name"<<setw(5)<<"AT"<<setw(5)<<"BT"<<setw(5)<<"FT"<<setw(5)<<"TAT"<
+ <setw(5)<<"WT"<<endl;
+ for(int i=0;i<n;i++)
+ {
+ cout<<setw(5)<<P[i].name<<setw(5)<<P[i].at<<setw(5)<<P[i].bt<<setw(5)<<P[i].ft<<setw(5)<<P[
+ i].tat<<setw(5)<<P[i].wt<<endl;
+ }
+ cout<<"\n";
+ for(int i=0;i<n;i++)
+ cout<<"----------------";
+ cout<<"\n";
+ for(int i=0;i<n;i++)
+ cout<<"|\t"<<P[i].name<<"\t";
+ cout<<"|\n";
+ for(int i=0;i<n;i++)
+ cout<<"----------------";
+ cout<<"\n";
+ cout<<P[0].at<<"\t\t";
+ for(int i=0;i<n;i++)
+ cout<<P[i].ft<<"\t\t";
+ cout<<"\n";
+ return 0;
+ }
+
+
+sjf : 
+
+ #include <bits/stdc++.h>
+ using namespace std;
+ void gantt_chart(int processes, int at[], int bt[], int iterator)
+ {
+ int ct[processes];
+ int pro[10]{0};
+ int l=0;
+ int nbt[processes];
+ for(int i=0;i<processes;i++)
+ nbt[i]=bt[i];
+ for(int i=0;i<processes;i++)
+ std::cout<<"----------------";
+ std::cout<<std::endl;
+ for(int arrival = 0; arrival < iterator; arrival++){
+ int process =-1;
+ int min_bt = 1e7;
+ int min_at = 1e7;
+ for(int j = 0; j < processes; j++){
+ if(at[j] <= arrival){
+ if(bt[j] != 0 && bt[j] < min_bt){
+ min_bt = bt[j];
+ min_at = at[j];
+ process = j;
+}
+ }
+ }
+ for(int j = 0; j < processes; j++){
+ if(bt[j] == min_bt){
+ if(at[j] < min_at){
+ min_at = at[j];
+ process = j;
+ }
+ }
+ }
+ if(process !=-1){
+ bt[process]-= min_bt;
+ arrival += min_bt- 1;
+ if(bt[process] == 0)
+ ct[process] = arrival + 1;
+ std::cout<<"|\t"<<"P"<<process+1<<"\t";
+ pro[l]=process+1;
+ l++;
+ }
+ else{
+ std::cout<<"|\t"<<"-"<<"\t";
+ pro[l]=-1;
+ l++;
+ }
+ }
+ std::cout<<"|\n";
+ for(int i=0;i<processes;i++)
+ std::cout<<"----------------";
+ std::cout<<std::endl;
+ std::cout<<at[0]<<"\t\t";
+ for(int k = 0; k < processes; k++)
+ std::cout<<ct[k]<<"\t\t";
+ std::cout<<"\n";
+ int tat[processes], wt[processes], stat=0, swt=0;
+ for(int i=0;i<processes;i++)
+ {
+ tat[i]=ct[i]-at[i];
+ wt[i]=tat[i]-nbt[i];
+ stat=stat+tat[i];
+ swt=swt+wt[i];
+ }
+cout<<setw(5)<<"Name"<<setw(5)<<"AT"<<setw(5)<<"BT"<<setw(5)<<"FT"<<setw(5)<<"TAT"<
+ <setw(5)<<"WT"<<endl;
+ for(int i=0;i<processes;i++)
+ {
+ cout<<setw(5)<<"P"<<(i+1)<<setw(5)<<at[i]<<setw(5)<<nbt[i]<<setw(5)<<ct[i]<<setw(5)<<tat[i]<
+ <setw(5)<<wt[i]<<endl;
+ }
+ cout<<"\nAverage TAT = "<<(float)stat/(float)processes<<endl;
+ cout<<"Average WT = "<<(float)swt/(float)processes<<endl;
+ return;
+ }
+ int main()
+ {
+ int processes;
+ std::cout<<"Enter the number of process: ";
+ std::cin>>processes;
+ int arrival_times[processes];
+ int burst_times[processes];
+ int iterator = 0;
+ for(int i = 0; i < processes; i++){
+ std::cout<<"Enter arrival time for process "<<i+1<<": ";
+ std::cin>>arrival_times[i];
+ }
+ for(int i = 0; i < processes; i++){
+ std::cout<<"Enter burst time for process "<<i+1<<": ";
+ std::cin>>burst_times[i];
+ iterator += burst_times[i];
+ }
+ std::cout<<std::endl;
+ gantt_chart(processes, arrival_times, burst_times, iterator);
+ }

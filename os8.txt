@@ -1,0 +1,148 @@
+#include<iostream>
+ #include <algorithm>
+ #include<climits>
+ using namespace std;
+ void fcfs(int arr[], int n, int head)
+ {
+ int curr, d,dist=0;
+ int h=head;
+ for(int i=0;i<n;i++)
+ {
+ curr= arr[i];
+ d= abs(curr-head);
+ dist+= d;
+ head=curr;
+ }
+ cout << "\nFCFS \nSeek Sequence is" << endl;
+ cout<<h<<"-> ";
+ for (int i = 0; i < n; i++) {
+ cout << arr[i] << "-> ";
+ }
+ cout << "\n`Total head movements = "<< dist << endl;
+ }
+ void sstf(int arr[], int n, int head)
+ {
+ int dist = 0;
+ bool visited[n] = {false};
+ cout << "\n SSTF \nSeek Sequence is" << endl;
+ cout<<head<<"-> ";
+ for (int i = 0; i < n; i++)
+ {
+ int min_dist = INT_MAX;
+ int index =-1;
+ for (int j = 0; j < n; j++)
+ {
+ if (!visited[j]) {
+ int d = abs(arr[j]- head);
+ if (d < min_dist) {
+ min_dist = d;
+ index = j;
+}
+ }
+ }
+ visited[index] = true;
+ dist += min_dist;
+ head = arr[index];
+ cout << arr[index] << "-> ";
+ }
+ cout << endl;
+ cout << "Total head movements = " << dist << endl;
+ }
+ void scan(int requests[], int n, int head) {
+ sort(requests, requests + n);
+ int dist = 0;
+ int curr = 0;
+ // Moving left
+ for (int i = n- 1; i >= 0;--i)
+ {
+ if (requests[i] <= head) {
+ curr = i;
+ break;
+ }
+ }
+ cout << "Seek Sequence: " << head << "-> ";
+ for (int i = curr; i >= 0;--i)
+ {
+ cout << requests[i] << "-> ";
+ dist += abs(requests[i]- head);
+ head = requests[i];
+ }
+ cout << "0-> ";
+ dist += 2*head;
+ for (int i = curr + 1; i < n; ++i)
+ {
+ cout << requests[i] << "-> ";
+ dist += abs(requests[i]- head);
+ head = requests[i];
+ }
+cout << endl;
+ cout << "Total Head Movement: " << dist << endl;
+ }
+ void cscan(int requests[], int n, int head) {
+ sort(requests, requests + n);
+ int dist = 0;
+ int curr = 0;
+ // Moving right
+ for (int i = 0; i < n; ++i) {
+ if (requests[i] >= head) {
+ curr = i;
+ break;
+ }
+ }
+ cout << "Seek Sequence: " << head << "-> ";
+ for (int i = curr; i < n; ++i) {
+ cout << requests[i] << "-> ";
+ dist += abs(requests[i]- head);
+ head = requests[i];
+ }
+ cout << "0-> ";
+ dist += ((199-head)+ 199);
+ head=0;
+ for (int i = 0; i<curr;i++) {
+ cout << requests[i] << "-> ";
+ dist += abs(requests[i]- head);
+ head = requests[i];
+ }
+ cout << endl;
+ cout << "Total Head Movement: " << dist << endl;
+ }
+ int main()
+ {
+ int n, head;
+cout<<"Enter total no. of request: ";
+ cin>>n;
+ int arr[n];
+ cout<<"Enter head pointer: ";
+ cin>>head;
+ cout<<"Enter request : ";
+ for(int i=0;i<n;i++)
+ {
+ cin>>arr[i];
+ }
+ int choice;
+ do{
+ cout << "Select Disk Scheduling Algorithm:\n";
+ cout << "1. FCFS\n";
+ cout << "2. SSTF\n";
+ cout << "3. SCAN\n";
+ cout << "4. C-SCAN\n";
+ cout << "Enter your choice: ";
+ cin >> choice;
+ switch(choice) {
+ case 1:
+ fcfs(arr, n ,head);
+ break;
+ case 2:
+ sstf(arr, n ,head);
+ break;
+ case 3:
+ scan(arr, n ,head);
+ break;
+ case 4:
+ cscan(arr, n ,head);
+ break;
+ default:
+ cout << "Invalid choice\n";
+ }
+ }while(choice!=5);
+ return 0
